@@ -20,14 +20,17 @@ class Ball(pygame.sprite.Sprite):
         self.color = (shade_1, shade_2, shade_3)
         self.radius = radius
         diameter = self.radius * 2
-
         self.image = pygame.Surface((diameter, diameter), pygame.SRCALPHA)
         pygame.draw.circle(self.image, self.color, (self.radius, self.radius), self.radius)
         self.rect = self.image.get_rect()
         self.rect.x = ball_x
         self.rect.y = ball_y
+        self.xspeed = 1
+        self.yspeed = 1
     def update(self):
-        self.rect.x += 0.5
+        self.rect.x += self.xspeed
+        self.rect.y += self.yspeed
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, player_x, player_y,size_x, size_y, shade_1, 
@@ -57,7 +60,7 @@ class Player(pygame.sprite.Sprite):
 players = pygame.sprite.Group()
 players.add(Player(40, 300, 15, 125, 161, 156, 156, "player_one"))
 players.add(Player(650, 300, 15, 125, 161, 156, 156, "player_two"))
-ball = Ball(300, 300, 15, 222, 20, 13)
+ball = Ball(300, 100, 15, 222, 20, 13)
 
 
 pygame.init()
@@ -79,6 +82,10 @@ while running:
         players.draw(screen)
         ball.update()
         screen.blit(ball.image, ball.rect)
+        collision = pygame.sprite.spritecollide(ball, players, False)
+        if collision:
+            ball.xspeed *= -1
+            ball.yspeed *= -1
 
     pygame.display.flip()
 
