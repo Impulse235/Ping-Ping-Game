@@ -25,11 +25,13 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = ball_x
         self.rect.y = ball_y
-        self.xspeed = 1
-        self.yspeed = 1
+        self.xspeed = 5
+        self.yspeed = 5
     def update(self):
         self.rect.x += self.xspeed
         self.rect.y += self.yspeed
+        if self.rect.y < 0 or self.rect.y > 470:
+            self.yspeed *= -1
 
 
 class Player(pygame.sprite.Sprite):
@@ -85,7 +87,7 @@ while running:
         collision = pygame.sprite.spritecollide(ball, players, False)
         if collision:
             ball.xspeed *= -1
-            ball.yspeed *= -1
+            #ball.yspeed *= -1
 
     pygame.display.flip()
 
