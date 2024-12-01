@@ -25,7 +25,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = ball_x
         self.rect.y = ball_y
-        self.xspeed = 5
+        self.xspeed = 7
         self.yspeed = 5
     def update(self):
         self.rect.x += self.xspeed
@@ -69,6 +69,7 @@ pygame.init()
 pygame.font.init()
 screen = pygame.display.set_mode((700, 500))
 clock = pygame.time.Clock()
+end_text = pygame.font.SysFont('Verdana', 75)
 running = True
 game_on = True
 dt = 0
@@ -87,7 +88,14 @@ while running:
         collision = pygame.sprite.spritecollide(ball, players, False)
         if collision:
             ball.xspeed *= -1
-            #ball.yspeed *= -1
+        if ball.rect.x > 700:
+            game_on = False
+            gameover = end_text.render('Player 1 Wins', True, 'red')
+            screen.blit(gameover, (75, 150))
+        if ball.rect.x < -50:
+            game_on = False
+            gameover = end_text.render('Player 2 Wins', True, 'red')
+            screen.blit(gameover, (75, 150))
 
     pygame.display.flip()
 
