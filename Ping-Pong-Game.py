@@ -1,4 +1,5 @@
 import pygame
+import random
 #testing commit
 
 class GameSprite(pygame.sprite.Sprite):
@@ -30,6 +31,7 @@ class Ball(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.xspeed
         self.rect.y += self.yspeed
+        pygame.draw.circle(self.image, self.color, (self.radius, self.radius), self.radius)
         if self.rect.y < 0 or self.rect.y > 470:
             self.yspeed *= -1
 
@@ -62,7 +64,7 @@ class Player(pygame.sprite.Sprite):
 players = pygame.sprite.Group()
 players.add(Player(40, 300, 15, 125, 161, 156, 156, "player_one"))
 players.add(Player(650, 300, 15, 125, 161, 156, 156, "player_two"))
-ball = Ball(300, 100, 15, 222, 20, 13)
+ball = Ball(300, 100, 15, 14, 150, 12)
 
 
 pygame.init()
@@ -72,6 +74,8 @@ clock = pygame.time.Clock()
 end_text = pygame.font.SysFont('Verdana', 75)
 running = True
 game_on = True
+timer = 0
+randomc = 0
 dt = 0
 
 while running:
@@ -81,11 +85,30 @@ while running:
 
     if game_on:
         screen.fill((173, 216, 230))
+        timer += dt
         players.update()
         players.draw(screen)
         ball.update()
         screen.blit(ball.image, ball.rect)
         collision = pygame.sprite.spritecollide(ball, players, False)
+        if timer >= 10:
+            timer = 0
+            randomc = random.randint(1, 3)
+            if randomc == 1:
+                ball.xspeed *= 0.5
+                ball.yspeed *= 0.5
+                ball.color = (14, 150, 12)
+                randomc = 0
+            if randomc == 2:
+                ball.xspeed *= 1.25
+                ball.yspeed *= 1.25
+                ball.color = (212, 160, 4)
+                randomc = 0
+            if randomc == 3:
+                ball.xspeed *= 1.5
+                ball.yspeed *= 1.5
+                ball.color = (252, 3, 3)
+                randomc = 0
         if collision:
             ball.xspeed *= -1
         if ball.rect.x > 700:
