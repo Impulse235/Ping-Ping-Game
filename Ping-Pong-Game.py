@@ -35,6 +35,29 @@ class Ball(pygame.sprite.Sprite):
         if self.rect.y < 0 or self.rect.y > 470:
             self.yspeed *= -1
 
+class Middle(pygame.sprite.Sprite):
+    def __init__(self, player_x, player_y,size_x, size_y, shade_1, 
+                 shade_2, shade_3):
+        super().__init__()
+        self.color = (shade_1, shade_2, shade_3)
+        self.size_x = size_x
+        self.size_y = size_y
+        self.image = pygame.Surface((self.size_x, self.size_y))
+        self.image.fill((self.color))
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+        self.randomM = -1
+    def update(self):
+        if self.randomM > 0:
+            self.rect.y -= 300 * dt
+            if self.rect.y < 0:
+                self.randomM *= -1
+        if self.randomM < 0:
+            self.rect.y += 300 * dt
+            if self.rect.y > 390:
+                self.randomM *= -1
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, player_x, player_y,size_x, size_y, shade_1, 
@@ -64,7 +87,8 @@ class Player(pygame.sprite.Sprite):
 players = pygame.sprite.Group()
 players.add(Player(40, 300, 15, 125, 161, 156, 156, "player_one"))
 players.add(Player(650, 300, 15, 125, 161, 156, 156, "player_two"))
-ball = Ball(300, 100, 15, 14, 150, 12)
+MiddlePaddle = Middle(350, 0, 15, 50, 0, 0, 0)
+ball = Ball(300, 100, 15, 181, 4, 212)
 
 
 pygame.init()
@@ -88,15 +112,19 @@ while running:
         timer += dt
         players.update()
         players.draw(screen)
+        MiddlePaddle.update()
         ball.update()
         screen.blit(ball.image, ball.rect)
+        screen.blit(MiddlePaddle.image, MiddlePaddle.rect)
         collision = pygame.sprite.spritecollide(ball, players, False)
+        if pygame.sprite.collide_rect(ball, MiddlePaddle):
+            ball.xspeed *= -1
         if timer >= 10:
             timer = 0
             randomc = random.randint(1, 3)
             if randomc == 1:
-                ball.xspeed *= 0.5
-                ball.yspeed *= 0.5
+                ball.xspeed *= 0.75
+                ball.yspeed *= 0.75
                 ball.color = (14, 150, 12)
                 randomc = 0
             if randomc == 2:
