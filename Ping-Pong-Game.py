@@ -2,6 +2,8 @@ import pygame
 import random
 #testing commit
 
+pygame.mixer.init()
+
 class GameSprite(pygame.sprite.Sprite):
     def __init__(self, img, x, y, width, height):
         pygame.sprite.Sprite.__init__(self)
@@ -96,6 +98,10 @@ pygame.font.init()
 screen = pygame.display.set_mode((700, 500))
 clock = pygame.time.Clock()
 end_text = pygame.font.SysFont('Verdana', 75)
+bounce_effect = pygame.mixer.Sound("Bounce.mp3")
+P1Win_effect = pygame.mixer.Sound("P1Win.mp3")
+P2Win_effect = pygame.mixer.Sound("P2Win.mp3")
+change_effect = pygame.mixer.Sound("ChangeSound.mp3")
 running = True
 game_on = True
 timer = 0
@@ -119,8 +125,10 @@ while running:
         collision = pygame.sprite.spritecollide(ball, players, False)
         if pygame.sprite.collide_rect(ball, MiddlePaddle):
             ball.xspeed *= -1
+            bounce_effect.play()
         if timer >= 10:
             timer = 0
+            change_effect.play()
             randomc = random.randint(1, 3)
             if randomc == 1:
                 ball.xspeed *= 0.75
@@ -139,13 +147,16 @@ while running:
                 randomc = 0
         if collision:
             ball.xspeed *= -1
+            bounce_effect.play()
         if ball.rect.x > 700:
             game_on = False
             gameover = end_text.render('Player 1 Wins', True, 'red')
+            P1Win_effect.play()
             screen.blit(gameover, (75, 150))
         if ball.rect.x < -50:
             game_on = False
             gameover = end_text.render('Player 2 Wins', True, 'red')
+            P2Win_effect.play()
             screen.blit(gameover, (75, 150))
 
     pygame.display.flip()
